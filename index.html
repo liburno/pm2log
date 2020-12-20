@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Console PM2</title>
+</head>
+<style>
+    input {
+        padding: 2px;
+        border: 1px solid gray;
+        margin:5px;
+    }
+    body{
+        font-family: monospace;
+    }
+    h1 {
+        margin-bottom: 1rem;
+        font-size:3rem;
+    }
+    h2 {
+        font-size: 1.8rem;
+        color:red;
+    }
+    th {
+        padding-left: 1rem;
+        padding-right: 1rem;
+        background-color: black;
+        color:white;
+    }
+    td {
+        padding: 0.2rem;
+        text-align: center;
+    }
+    td:nth-child(4),td:nth-child(5),td:nth-child(7),td:nth-child(8),td:nth-child(1) {
+        text-align: right;
+    }
+    td:nth-child(2) {
+        text-align: left;
+    }
+    table,td,tr {
+        border:1px solid gray;
+        border-collapse: collapse;
+        margin-bottom: 1rem;
+    }
+    button {
+        width: 100%;
+        padding: 0.2rem;
+        font-weight: bold;
+        cursor: pointer;
+
+    }
+    button:hover {
+        color:yellow;
+        background-color: darkgray;
+    }
+
+</style>
+<body>
+
+    <h1 id="xtitle"></h1>
+    key:
+    <input id="key" type="password"   />
+    <button id="btncopie" style="margin-left:20px;width:120px">Sync Copie</button>
+    <table>
+        <tr><th></th><th>info</th></tr>
+        <tr><td>processor</td><td id="iproc"></td></tr>
+        <tr><td>cores</td><td id="icores"></td></tr>
+        <tr><td>memory</td><td id="imem"></td></tr>
+        <tr><td>cpu</td><td id="icpu"></td></tr>
+    </table>
+    <table>
+        <tr><th>Disk</th><th>Tot Space</th><th>Tot Used</th><th>Tot Free</th></tr>
+        <tr><td id="diskname"></td><td id="disktot" style="text-align: right;"></td><td style="text-align: right;" id="diskused"></td><td id="diskfree"></td></tr>
+    </table>
+
+    <table>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>pid</th>
+            <th>uptime</th>
+            <th>refresh</th>
+            <th>status</th>
+            <th>%cpu</th>
+            <th>%mem</th>
+            <th>refresh</th>
+        </tr>
+        <tbody id="xbody"></tbody>
+
+    </table>
+    <h2 id="xerr"></h2>
+    <pre id="dump"></pre>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var el=document.getElementById("key");
+            el.value=localStorage.getItem("key");
+        });
+        var socket = io();
+        var e=document.getElementById("xbody");
+        var e1=document.getElementById("xtitle");
+        var e2=document.getElementById("xerr");
+        var ed=document.getElementById("dump");
+        var eproc=document.getElementById("iproc");
+        var ecores=document.getElementById("icores");
+        var emem=document.getElementById("imem");
+        var ecpu=document.getElementById("icpu");
+        
+        var btncopie=document.getElementById("btncopie");
+        var id=0;
+        btncopie.addEventListener("click",()=>{
+            socket.emit("update",`id=${++id}`)   
+            btncopie.innerText=`Sync ${id}`
+        })
+        socket.on('pm2list', data=>{
+            e.innerHTML=""
+            e1.innerText=data.name;
+            e2.innerText=data.err;
+            //ed.innerText=JSON.stringify(data,null,2);
+            eproc.innerText=data.processor;
+            ecores.innerText=data.cores;
+            emem.innerText=data.memory;
+            document.getElementById("diskname").innerText=data.diskname;
+            document.getElementById("disktot").innerText=data.disktot;
+            document.getElementById("diskused").innerText=data.diskused;
+            document.getElementById("diskfree").innerText=data.diskfree;
+            if (!data.synccopie) {
+                btncopie.style.display="none";
+            } 
+            ecpu.innerText=data.cpu+" %";
+            for (var x of data.rr) {
+                var tm=document.createElement("tr");
+                for (var y in x) {
+                    if (!y.startsWith('_')) {
+                        var t1=document.createElement("td");
+                        t1.innerText=x[y];
+                        tm.appendChild(t1);
+                    }
+                }
+                var t1=document.createElement("button");
+                t1.innerText="refresh"
+                var resetclick=(t1,aa)=>{
+                    t1.addEventListener("click",()=>{
+                        var el=document.getElementById("key");
+                        var xx=el.value
+                        localStorage.setItem("key",xx);
+                            socket.emit("reset",{name:aa,key:xx})   
+                     })
+                }
+                resetclick(t1,x.name);
+                tm.appendChild(t1);
+                e.appendChild(tm);
+            }
+        });
+      
+    </script>
+</body>
+
+
+</html>
