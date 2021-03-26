@@ -1,5 +1,7 @@
 {
-    "name":"pm2log <server>",
+    "name":"r02 log",
+    "disk":"/dev/disk1s1",
+    "temp":false,
     "err":"",
     "rr":[],
     "passw":"pm2logpass"

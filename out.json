@@ -1,0 +1,15 @@
+{
+  "name": "r02 log",
+  "disk": "/dev/disk1s1",
+  "temp": false,
+  "err": "",
+  "rr": [],
+  "server": "pm2log",
+  "cores": "       0\n",
+  "error": {},
+  "processor": "undefined",
+  "pstime1": 0.027890419,
+  "temperr": "Command failed: /opt/vc/bin/vcgencmd measure_temp\n/bin/sh: /opt/vc/bin/vcgencmd: No such file or directory\n",
+  "memory": "total mem: 0 mb, used mem: 0 mb,  used NaN %",
+  "pstime9": 0.000784228
+}
