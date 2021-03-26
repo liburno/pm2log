@@ -1,6 +1,6 @@
 {
     "name":"r02 log",
-    "disk":"/dev/disk1s1",
+    "disk":"/dev/root",
     "temp":false,
     "err":"",
     "rr":[],

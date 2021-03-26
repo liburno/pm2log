@@ -13,7 +13,9 @@
         margin:5px;
     }
     body{
-        font-family: monospace;
+        font-family:Arial, Helvetica, sans-serif;
+        background-color: #333;
+        color:#ddd;
     }
     h1 {
         margin-bottom: 1rem;
@@ -30,13 +32,12 @@
         color:white;
     }
     td {
-        padding: 0.2rem;
         text-align: center;
     }
-    td:nth-child(4),td:nth-child(5),td:nth-child(7),td:nth-child(8),td:nth-child(1) {
+    td:nth-child(1),td:nth-child(2),td:nth-child(3) {
         text-align: right;
     }
-    td:nth-child(2) {
+    td:nth-child(6) {
         text-align: left;
     }
     table,td,tr {
@@ -44,16 +45,32 @@
         border-collapse: collapse;
         margin-bottom: 1rem;
     }
+    td {
+        padding:0rem 1rem;
+    }
     button {
         width: 100%;
-        padding: 0.2rem;
+        padding: 0.4rem;
         font-weight: bold;
+        font-size:1rem;
         cursor: pointer;
 
     }
     button:hover {
         color:yellow;
         background-color: darkgray;
+    }
+    #refreshmsg {
+        color:red;
+        font-size:1.8rem;
+        padding:0.5rem 2rem;
+        display:none;
+        background: lightcyan;
+    }
+    .pdes {
+        text-align: left !important;
+        background:#222;
+
     }
 
 </style>
@@ -63,13 +80,14 @@
     key:
     <input id="key" type="password"   />
     <button id="refresh" style="margin-left:20px;width:120px">Refresh</button>
+    <pre id="refreshmsg"></pre>
     <table>
         <tr><th></th><th>info</th></tr>
-        <tr><td>processor</td><td id="iproc"></td></tr>
-        <tr><td>cores</td><td id="icores"></td></tr>
-        <tr><td>memory</td><td id="imem"></td></tr>
-        <tr><td>cpu</td><td id="icpu"></td></tr>
-        <tr><td>Temp.</td><td id="itemp"></td></tr>
+        <tr><td>processor</td><td class="pdes" id="iproc"></td></tr>
+        <tr><td>cores</td><td class="pdes"  id="icores"></td></tr>
+        <tr><td>memory</td><td class="pdes"  id="imem"></td></tr>
+        <tr><td>cpu</td><td class="pdes"  id="icpu"></td></tr>
+        <tr><td>Temp.</td><td class="pdes"  id="itemp"></td></tr>
     </table>
     <table>
         <tr><th>Disk</th><th>Tot Space</th><th>Tot Used</th><th>Tot Free</th></tr>
@@ -111,8 +129,26 @@
         var btnrefresh=document.getElementById("refresh");
         var id=0;
         btnrefresh.addEventListener("click",()=>{
-            socket.emit("refreshpm2")   
+            var aa=document.getElementById("key").value;
+            localStorage.setItem("key",aa)
+            socket.emit("refreshpm2",aa)   
         })
+        document.getElementById("refresh").addEventListener("click",()=>{
+            document.getElementById("refreshmsg").innerHTML=""
+        })
+       
+        socket.on('refreshdone',data=>{
+            var tm=document.getElementById("refreshmsg")
+            data=data.trim();
+            if (data) {
+                tm.innerText=data
+                tm.style.display="block"
+            }
+
+            
+        })
+
+
         socket.on('pm2list', data=>{
             e.innerHTML=""
             e1.innerText=data.name;

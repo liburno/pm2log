@@ -143,8 +143,8 @@ async function updateps() {
             if (xx)
                 tmv.push({
                     pid: parseInt(trova[1]),
-                    cpu: parseFloat(trova[2]),
-                    mem: parseFloat(trova[3]),
+                    cpu: parseFloat(trova[2])+'%',
+                    mem: parseFloat(trova[3])+'%',
                     size: Math.floor(parseInt(trova[4]) / 102.4) / 10 + 'mb',
                     time: trova[5],
                     site: xx
@@ -180,28 +180,18 @@ io.on('connection',async function (socket) {
     var ii = 0;
     await pm2stat();
     var id = setInterval(await pm2stat, 1783);
-    socket.on("reset", (d) => {
-        console.log(d)
-        if (d.key == rpassw) {
-            shell(`pm2 restart ${d.name}`).then(d => {
-                rtot.err = ""
-                pm2stat();
-            })
-        } else {
-            rtot.err = "wrong password"
-        }
-    });
-    socket.on("update",(d)=>{
-        _exec(`../update "${d}"`, (e, stdout) => {
-            if (e) {
-                  fs.appendFileSync("err.log",e)
-            } else {
-                fs.appendFileSync("x.log",stdout)
-            }
+    socket.on("refreshpm2",async function (d)  {
+        var msg="";
+        if (d == rpassw) {
+            await shell(`pm2 restart all`)
             rtot.err = ""
             pm2stat();
-        });
-    })
+        } else {
+            msg = "wrong password"
+        }
+        ii++
+        socket.emit(`refreshdone`,msg);
+    });
     socket.on('disconnect', function () {
         clearInterval(id);
         console.log('user disconnect');

@@ -1,5 +1,6 @@
 {
   "name": "r02 log",
+<<<<<<< HEAD
   "disk": "/dev/disk1s1",
   "temp": false,
   "err": "",
@@ -12,4 +13,50 @@
   "temperr": "Command failed: /opt/vc/bin/vcgencmd measure_temp\n/bin/sh: /opt/vc/bin/vcgencmd: No such file or directory\n",
   "memory": "total mem: 0 mb, used mem: 0 mb,  used NaN %",
   "pstime9": 0.000784228
+=======
+  "disk": "/dev/root",
+  "temp": false,
+  "err": "",
+  "rr": [
+    {
+      "pid": 25809,
+      "cpu": 0.5,
+      "mem": 2.8,
+      "size": "53.2mb",
+      "time": "40:44",
+      "site": "ipazia.cros.win"
+    },
+    {
+      "pid": 25816,
+      "cpu": 0.4,
+      "mem": 2.2,
+      "size": "42.4mb",
+      "time": "40:44",
+      "site": "libri.cros.win"
+    },
+    {
+      "pid": 25825,
+      "cpu": 0.4,
+      "mem": 2.7,
+      "size": "52.1mb",
+      "time": "40:44",
+      "site": "tito.cros.win"
+    }
+  ],
+  "server": "r02.cros.win",
+  "cores": "4\n",
+  "processor": "ARMv7 Processor rev 3 (v7l)",
+  "pstime0": 0.043038819,
+  "diskname": "/dev/root",
+  "disktot": "470G",
+  "diskused": "19G",
+  "diskfree": "432G",
+  "pstime1": 0.039250518,
+  "gputemp": "54.5'C",
+  "cputemp": "54.5'C",
+  "temptime": 0.028318403,
+  "memory": "total mem: 1865 mb, used mem: 614 mb,  used 32 %",
+  "cpu": 1.4,
+  "pstime9": 0.003314308
+>>>>>>> 41c81934d16459094b0fecf981a45da52e062bf3
 }
